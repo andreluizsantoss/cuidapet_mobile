@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "705681205799",
+    "project_id": "cuidapet-20",
+    "storage_bucket": "cuidapet-20.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:705681205799:android:bf3ab4af638c6a74d8bc02",
+        "android_client_info": {
+          "package_name": "com.softsantos.cuidapet_mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "705681205799-1vu56fo75flc9umqj7kt50rjv720219s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.softsantos.cuidapet_mobile",
+            "certificate_hash": "dad9b86eb353e3a439b93467bfa4a084f0e81199"
+          }
+        },
+        {
+          "client_id": "705681205799-3170mjsaq99i09s7si8k2jjfcqm5476s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDVom_pIcVio6TI1IXwFz6WmAQ7St3_HrI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "705681205799-3170mjsaq99i09s7si8k2jjfcqm5476s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
