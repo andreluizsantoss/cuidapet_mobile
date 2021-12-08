@@ -42,6 +42,7 @@ class UserServiceImpl implements UserService {
           .signInWithEmailAndPassword(email: email, password: password);
       await _saveAccessToken(accessToken);
       await _confirmLogin();
+      await _getUserData();
     } on FirebaseAuthException catch (e, s) {
       _log.error('Erro ao fazer login no Firebase Auth', e, s);
       throw Failure(message: 'Erro ao fazer login no Firebase');
@@ -56,5 +57,11 @@ class UserServiceImpl implements UserService {
     await _saveAccessToken(confirmLoginModel.accessToken);
     await _localSecurityStorage.write(
         Constants.REFRESH_TOKEN_KEY, confirmLoginModel.refreshToken);
+  }
+
+  Future<void> _getUserData() async {
+    final userLogged = await _userRepository.getUserLogged();
+    await _localStorage.write<String>(
+        Constants.USER_DATA_KEY, userLogged.toJson());
   }
 }
