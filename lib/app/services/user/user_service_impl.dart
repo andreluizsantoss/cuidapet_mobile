@@ -1,4 +1,6 @@
 import 'package:cuidapet_mobile/app/core/exceptions/failure.dart';
+import 'package:cuidapet_mobile/app/core/exceptions/social_login_canceled.dart';
+import 'package:cuidapet_mobile/app/core/exceptions/user_exists_exception.dart';
 import 'package:cuidapet_mobile/app/core/helpers/constants.dart';
 import 'package:cuidapet_mobile/app/core/helpers/logger.dart';
 import 'package:cuidapet_mobile/app/core/local_storages/local_security_storage.dart';
@@ -74,6 +76,7 @@ class UserServiceImpl implements UserService {
 
   @override
   Future<void> socialLogin(SocialType socialType) async {
+    // * Variável para saber o e-mail que ele irá tentar se logar
     String? email;
 
     try {
@@ -82,8 +85,9 @@ class UserServiceImpl implements UserService {
       final AuthCredential authCredential;
       final firebaseAuth = FirebaseAuth.instance;
 
-      // * Estrutura de Login com o Google
       switch (socialType) {
+
+        // * Estrutura de Login com o Google
         case SocialType.google:
           socialModel = await _socialRepository.googleLogin();
           authCredential = GoogleAuthProvider.credential(
@@ -91,7 +95,17 @@ class UserServiceImpl implements UserService {
             idToken: socialModel.id,
           );
           break;
+
+        // * Estrutura de Login com o Facebook
+        case SocialType.facebook:
+          socialModel = await _socialRepository.facebookLogin();
+          authCredential =
+              FacebookAuthProvider.credential(socialModel.accessToken);
+          break;
       }
+
+      // * Pegando o e-mail que o usuário esta tentando se logar
+      email = socialModel.email;
 
       // * Efetua o Login no Firebase com Credential (Provedor)
       await firebaseAuth.signInWithCredential(authCredential);
@@ -108,8 +122,34 @@ class UserServiceImpl implements UserService {
       // * Pega os dados do Usuário Logado
       await _getUserData();
     } on FirebaseAuthException catch (e, s) {
+      
+      // * Erro para quando existe o e-mail cadastrado com outro tipo de Provedor
+      if (e.code == 'account-exists-with-different-credential') {
+        
+        if (email != null) {
+          // * Pega os métodos autenticados
+          final fetchMethods =
+              await FirebaseAuth.instance.fetchSignInMethodsForEmail(email);
+          var socialNetwork = '';
+
+          // * Caso o método possua GOOGLE.COM
+          // * Estaria tentanto se logar com o FACEBOOK e já existe o login com o GOOGLE
+          if (fetchMethods.contains('google.com')) {
+            socialNetwork = 'Google';
+          }
+
+          // * Mostrar mensagem para o usuário
+          _log.error('Usuário registrado com outro método de login ($socialNetwork, $socialType)');
+          throw UserExistsException('Você se registrou com $socialNetwork, por favor utilize este mesmo método');
+        }
+      }
+
       _log.error('Erro ao realizar login no Firebase', e, s);
       throw Failure(message: 'Erro ao realizar login no Firebase');
+      
+    } on SocialLoginCanceled {
+      _log.error('Login Cancelado');
+      rethrow;
     }
   }
 }

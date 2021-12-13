@@ -7,7 +7,6 @@ import 'package:cuidapet_mobile/app/modules/auth/login/login_controller.dart';
 import 'package:flutter/material.dart';
 
 class LoginRegisterButtons extends StatelessWidget {
-
   final LoginController _loginController;
 
   const LoginRegisterButtons(
@@ -28,7 +27,7 @@ class LoginRegisterButtons extends StatelessWidget {
           icon: CuidapetIcons.facebook_1,
           width: .42.sw,
           title: 'Facebook',
-          onTap: () {},
+          onTap: () => _loginController.socialLogin(SocialType.facebook),
         ),
         RoundedButtonWithIcon(
           color: const Color(0xFFE15031),
