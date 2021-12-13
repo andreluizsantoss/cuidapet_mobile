@@ -17,10 +17,6 @@ import 'package:flutter_modular/flutter_modular.dart';
 class CoreModule extends Module {
   @override
   final List<Bind> binds = [
-    Bind.lazySingleton(
-      (i) => AuthStore(),
-      export: true,
-    ),
     Bind.factory<RestClient>(
         (i) => DioRestClient(
               localStorage: i(),
@@ -39,6 +35,12 @@ class CoreModule extends Module {
     Bind.lazySingleton<LocalSecurityStorage>(
         (i) => FlutterSecureStorageLocalSecurityStorageImpl(),
         export: true),
+    Bind.lazySingleton(
+      (i) => AuthStore(
+        localStorage: i(),
+      ),
+      export: true,
+    ),
     Bind.lazySingleton<UserRepository>(
         (i) => UserRepositoryImpl(
               restClient: i(),

@@ -27,6 +27,7 @@ class _AuthHomePageState extends State<AuthHomePage> {
         Modular.to.navigate('/auth/login/');
       }
     });
+    
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       widget._authStore.loadUser();
     });
